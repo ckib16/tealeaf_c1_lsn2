@@ -9,54 +9,54 @@
 
 class Player
 
-  attr_accessor :hand
+  attr_accessor :hand, :human_hand, :computer_hand
 
   def initialize
-    @hand = []
+    @@hand = {human_hand: nil, computer_hand: nil}
   end
+
+  CHOICES = ["R", "P", "S"]
 end
 
 class Human < Player
+  attr_accessor :name
 
-  attr_accessor :human_hand, :name
-
-  def initialize(h, n)
-    @human_hand = hand << h
+  def initialize(n)
     @name = n
   end
+
+  def human_picks(hp)
+    puts "Chose one: (R/P/S)"
+    begin
+      players_input = gets.chomp.upcase.to_s
+    end until CHOICES.include?(players_input)  # disregard non r/p/s inputs
+    hc[self.human_hand] = players_input
+    puts "You chose #{hc[self.human_hand}"
+    hc
+  end
+
 end
 
 class Computer < Player
+  def initialize
+  end
 
-  attr_accessor :computer_hand
-
-  def initialize(c)
-    @computer_hand = hand << computer_hand
+  def computer_picks
+    options = ["R", "P", "S"]
+    self.computer_hand = options.sample
+    puts "The computer picks #{computer_choice}."
   end
 end
 
 class RPS
 
-  attr_accessor :human_choice, :computer_choice
-
   def start_game
     puts "welcome to Rock, Paper, Scissors"  
     puts "What is your name?"
     name_input = gets.chomp
-    player = Player.new(name_input)
-  end
-
-  def human_picks
-    puts "Please pick R / P / S"
-    human_choice = gets.chomp.to_s.upcase
-    puts "The human picks #{human_choice}."
-  end
-
-def computer_picks
-    options = ["R", "P", "S"]
-    computer_choice = options.sample
-    puts "The computer picks #{computer_choice}."
+    player = Human.new(0, name_input)
   end
 end
 
-puts start_game
+rps = RPS.new
+rps.start_game

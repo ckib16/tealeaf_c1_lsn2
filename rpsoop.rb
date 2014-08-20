@@ -17,7 +17,7 @@ class Hand
   end
 
   def <=>(another_hand)
-    if @value == another_hand
+    if @value == another_hand.value
       0
     elsif (@value == 'p' && another_hand.value == 'r') || (@value == 'r' && another_hand.value == 's') ||
 (@value == 's' && another_hand.value == 'p')

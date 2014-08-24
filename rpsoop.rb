@@ -49,7 +49,7 @@ class Player
   end
 
   def to_s
-    puts "#{player} currently has a choice of #{choice}"
+    puts "#{player} currently has a choice of #{self.hand.value}"
   end
 end
 
@@ -110,5 +110,6 @@ class Game
 end
 
 Game.new.play
-        
+
+
 

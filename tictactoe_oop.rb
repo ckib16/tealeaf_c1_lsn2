@@ -96,15 +96,15 @@ class Game
   end
 
   def alternate_player
-    if current_player == @human
-      current_player = @computer
+    if @current_player == @human
+      @current_player = @computer
     else
       @current_player = @computer
     end
   end
 
-  def current_player_wins?()
-    @board.three_squares_in_a_row?(@current_player, marker)
+  def current_player_wins?
+    @board.three_squares_in_a_row?(@current_player.marker)
   end
 
   def play
@@ -115,7 +115,7 @@ class Game
       if current_player_wins?
         puts "#{@current_player.name} Wins!"
         break
-      elsif all_squares_marked?
+      elsif @board.all_squares_marked?
         puts "It's a tie!"
         break
       else

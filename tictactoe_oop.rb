@@ -1,3 +1,5 @@
+require 'pry'
+
 class Board
   WINNING_LINES = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
 
@@ -48,8 +50,8 @@ class Board
 end
 
 class Player
-  attr_reader :marker, :name
-  def initialize(marker, name)
+  attr_reader :name, :marker
+  def initialize(name, marker)
     @name = name
     @marker = marker
   end
@@ -86,7 +88,7 @@ class Game
   def current_player_marks_square
     if @current_player == @human
       begin
-        puts "Pick a Square from #{@board.empty_positions} to place your mark!"
+        puts "Pick a Square from #{@board.empty_positions}!"
         position = gets.chomp.to_i
       end until @board.empty_positions.include?(position)
     else
@@ -99,7 +101,7 @@ class Game
     if @current_player == @human
       @current_player = @computer
     else
-      @current_player = @computer
+      @current_player = @human
     end
   end
 

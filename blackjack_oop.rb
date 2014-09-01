@@ -28,7 +28,7 @@ class Card
   def find_suit
     case suit
       when 'H' then 'Hearts'
-      when 'D' then 'Daimonds'
+      when 'D' then 'Diamonds'
       when 'C' then 'Clubs'
       when 'S' then 'Spades'
     end

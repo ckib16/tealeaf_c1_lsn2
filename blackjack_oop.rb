@@ -125,114 +125,126 @@ class Dealer
   end
 end
 
-deck = Deck.new
-
-puts "What's your name, stranger?"
-name_input = gets.chomp
-
-player = Player.new(name_input)
-dealer = Dealer.new
-
-player.add_card(deck.deal_one)
-dealer.add_card(deck.deal_one)
-player.add_card(deck.deal_one)
-dealer.add_card(deck.deal_one)
-
-binding.pry
-
-player.show_hand
-dealer.show_hand
-
 ######## Game engine from procedural ########
 
-#Check for blackjack at start of game#
-if player.total && dealer.total == 21
-  puts "You both hit blackjack. It's a push"
-  exit
-end
+class Blackjack
 
-if dealer.total == 21
-  puts "Dealer hits Blackjack. You lose."
-  exit
-end
+  attr_accessor :deck, :player, :dealer
 
-if player.total == 21
-  puts "Nice! You hit blackjack. You win."
-  exit
-end
-
-#Player turn
-
-while player.total < 21
-  puts "What do you want to do? 1)Hit 2)Stay?"
-  hit_or_stay = gets.chomp
-
-  if !["1","2"].include?(hit_or_stay)
-    puts "Sorry, please enter 1 (Hit) or 2 (stay)"
-    next
+  def initialize
+    @deck = Deck.new
+    @player = Player.new("player_name_placeholder")
+    @dealer = Dealer.new
   end
 
-  if hit_or_stay == "2"
-    puts "You've chosen to stay."
-    break
+  def start_and_deal
+    
+
+    puts "What's your name, stranger?"
+    player.name = gets.chomp
+
+    player.add_card(deck.deal_one)
+    dealer.add_card(deck.deal_one)
+    player.add_card(deck.deal_one)
+    dealer.add_card(deck.deal_one)
+
+    player.show_hand
+    dealer.show_hand
   end
 
-#hit
-  hit_card = deck.deal_one
-  puts "You hit and get the card: #{hit_card.pretty_output}"
-  player.cards << hit_card
-  players_total = player.total
-  puts "Your new total is #{players_total}"
+  def check_blackjack #Check for blackjack at start of game#
+    if player.total && dealer.total == 21
+      puts "You both hit blackjack. It's a push"
+      exit
+    end
 
-  if players_total == 21
-    puts "Nice! You hit blackjack. You win."
-  elsif players_total > 21
-    puts "Oh, snap! Looks like you busted. You lose."
-    exit
+    if dealer.total == 21
+      puts "Dealer hits Blackjack. You lose."
+      exit
+    end
+
+    if player.total == 21
+      puts "Nice! You hit blackjack. You win."
+      exit
+    end
+  end
+
+  def player_turn
+    while player.total < 21
+      puts "What do you want to do? 1)Hit 2)Stay?"
+      hit_or_stay = gets.chomp
+
+      if !["1","2"].include?(hit_or_stay)
+        puts "Sorry, please enter 1 (Hit) or 2 (stay)"
+        next
+      end
+
+      if hit_or_stay == "2"
+        puts "You've chosen to stay."
+        break
+      end
+
+    #hit - can refactor for method
+      hit_card = deck.deal_one
+      puts "You hit and get the card: #{hit_card.pretty_output}"
+      player.cards << hit_card
+      puts "Your new total is #{player.total}"
+
+      if player.total == 21
+        puts "Nice! You hit blackjack. You win."
+      elsif player.total > 21
+        puts "Oh, snap! Looks like you busted. You lose."
+        exit
+      end
+    end
+  end
+
+  def dealer_turn
+    while dealer.total <17
+    #hit
+      hit_card = deck.deal_one
+      puts "Dealer hits and get the card: #{hit_card.pretty_output}"
+      dealer.cards << hit_card
+      dealer.total
+      puts "Dealer's new total is #{dealer.total}"
+
+    if dealer.total == 21
+        puts "Damn! Dealer hit blackjack. You Lose."
+      elsif dealer.total > 21
+        puts "Dealer busted. You win."
+        exit
+      end
+    end
+  end
+
+  def compare_hands
+    puts 
+    puts "Dealers cards are:"
+    dealer.cards.each do |card|
+      puts "=> #{card.pretty_output}"
+    end
+    puts "Dealers total is #{dealer.total}"
+    puts ""
+
+    puts "Players cards are:"
+    player.cards.each do |card|
+      puts "=> #{card.pretty_output}"
+    end
+    puts "Players total is #{player.total}"
+    puts ""
+
+    if player.total > dealer.total
+      puts "You win!"
+    elsif player.total < dealer.total
+      puts "You lose."
+    else
+      puts "It's a push, you tie."
+    end
   end
 end
 
-#Dealer turn
-
-while dealer.total <17
-#hit
-  hit_card = deck.deal_one
-  puts "Dealer hits and get the card: #{hit_card.pretty_output}"
-  dealer.cards << hit_card
-  dealers_total = dealer.total
-  puts "Dealer's new total is #{dealers_total}"
-
-if dealers_total == 21
-    puts "Damn! Dealer hit blackjack. You Lose."
-  elsif dealers_total > 21
-    puts "Dealer busted. You win."
-    exit
-  end
-end
-
-#compare hands
-puts 
-puts "Dealers cards are:"
-dealer.cards.each do |card|
-  puts "=> #{card}"
-end
-puts "Dealers total is #{dealers_total}"
-puts ""
-
-puts "Players cards are:"
-player.cards.each do |card|
-  puts "=> #{card}"
-end
-puts "Players total is #{players_total}"
-puts ""
-
-if players_total > dealers_total
-  puts "You win!"
-elsif players_total < dealers_total
-  puts "You lose."
-else
-  puts "It's a push, you tie."
-end
-
-
-
+game = Blackjack.new
+game.start_and_deal
+game.player_turn
+game.dealer_turn
+game.compare_hands

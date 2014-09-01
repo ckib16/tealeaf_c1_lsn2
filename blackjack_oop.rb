@@ -26,12 +26,13 @@ class Card
   end
 
   def find_suit
-    case suit
-      when 'H' then 'Hearts'
-      when 'D' then 'Diamonds'
-      when 'C' then 'Clubs'
-      when 'S' then 'Spades'
-    end
+    ret_val = case suit
+                when 'H' then 'Hearts'
+                when 'D' then 'Diamonds'
+                when 'S' then 'Spades'
+                when 'C' then 'Clubs'
+              end
+    ret_val
   end
 end
 
@@ -39,11 +40,11 @@ end
 class Deck
   attr_accessor :cards
 
-  def initailize
+  def initialize
     @cards = []
-    ['H', 'D', 'C', 'S'].each do |suit|
+    ['H', 'D', 'S', 'C'].each do |suit|
       ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'].each do |face_value|
-        @cards << Card.new(suit, face_value) 
+        @cards << Card.new(suit, face_value)
       end
     end
     scramble!
@@ -66,7 +67,7 @@ module Hand
   def show_hand
     puts "---- #{name}'s Hand ----"
     cards.each do |card|
-      puts "=> #{card}"
+      puts "=> #{card.pretty_output}"
     end
     puts "---- Total is: #{total} ----"
   end
@@ -126,8 +127,6 @@ end
 
 deck = Deck.new
 
-binding.pry
-
 puts "What's your name, stranger?"
 name_input = gets.chomp
 
@@ -139,9 +138,101 @@ dealer.add_card(deck.deal_one)
 player.add_card(deck.deal_one)
 dealer.add_card(deck.deal_one)
 
+binding.pry
+
 player.show_hand
 dealer.show_hand
 
+######## Game engine from procedural ########
+
+#Check for blackjack at start of game#
+if player.total && dealer.total == 21
+  puts "You both hit blackjack. It's a push"
+  exit
+end
+
+if dealer.total == 21
+  puts "Dealer hits Blackjack. You lose."
+  exit
+end
+
+if player.total == 21
+  puts "Nice! You hit blackjack. You win."
+  exit
+end
+
+#Player turn
+
+while player.total < 21
+  puts "What do you want to do? 1)Hit 2)Stay?"
+  hit_or_stay = gets.chomp
+
+  if !["1","2"].include?(hit_or_stay)
+    puts "Sorry, please enter 1 (Hit) or 2 (stay)"
+    next
+  end
+
+  if hit_or_stay == "2"
+    puts "You've chosen to stay."
+    break
+  end
+
+#hit
+  hit_card = deck.deal_one
+  puts "You hit and get the card: #{hit_card.pretty_output}"
+  player.cards << hit_card
+  players_total = player.total
+  puts "Your new total is #{players_total}"
+
+  if players_total == 21
+    puts "Nice! You hit blackjack. You win."
+  elsif players_total > 21
+    puts "Oh, snap! Looks like you busted. You lose."
+    exit
+  end
+end
+
+#Dealer turn
+
+while dealer.total <17
+#hit
+  hit_card = deck.deal_one
+  puts "Dealer hits and get the card: #{hit_card.pretty_output}"
+  dealer.cards << hit_card
+  dealers_total = dealer.total
+  puts "Dealer's new total is #{dealers_total}"
+
+if dealers_total == 21
+    puts "Damn! Dealer hit blackjack. You Lose."
+  elsif dealers_total > 21
+    puts "Dealer busted. You win."
+    exit
+  end
+end
+
+#compare hands
+puts 
+puts "Dealers cards are:"
+dealer.cards.each do |card|
+  puts "=> #{card}"
+end
+puts "Dealers total is #{dealers_total}"
+puts ""
+
+puts "Players cards are:"
+player.cards.each do |card|
+  puts "=> #{card}"
+end
+puts "Players total is #{players_total}"
+puts ""
+
+if players_total > dealers_total
+  puts "You win!"
+elsif players_total < dealers_total
+  puts "You lose."
+else
+  puts "It's a push, you tie."
+end
 
 
 

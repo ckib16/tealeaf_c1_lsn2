@@ -10,6 +10,9 @@
 # Major nouns:
 # Deck, Player, Dealer, Hand, Game
 
+require 'rubygems'
+require 'pry'
+
 class Card
   attr_accessor :suit, :face_value
     
@@ -123,9 +126,21 @@ end
 
 deck = Deck.new
 
-player = Player.new('Chris')
+binding.pry
+
+puts "What's your name, stranger?"
+name_input = gets.chomp
+
+player = Player.new(name_input)
+dealer = Dealer.new
+
 player.add_card(deck.deal_one)
+dealer.add_card(deck.deal_one)
+player.add_card(deck.deal_one)
+dealer.add_card(deck.deal_one)
+
 player.show_hand
+dealer.show_hand
 
 
 
